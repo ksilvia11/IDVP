@@ -3,6 +3,8 @@ const dateTimeET = require("./src/dateTimeET")
 const fs = require ('fs').promises;
 const textRef = "public/txt/vanasonad.txt";
 const regtextRef = "public/txt/visits.txt";
+const visits = require('./src/lastvisits');
+
 
 const bodyparser = require('body-parser');
 // + dateTimeET.day() + '</p>\n');
@@ -28,6 +30,7 @@ app.get('/', (req,res)=>{
 	res.render('index', {dayNow: dayNow, dateNow: dateNow, timeNow: timeNow});
 });
 
+
 app.get('/vanasona', async (req,res)=>{
 	try {
 		const data = await fs.readFile(textRef, "utf8");
@@ -40,14 +43,30 @@ app.get('/vanasona', async (req,res)=>{
 	}
 });
 
-app.get('/regivisit', (req,res)=>{
+app.get('/kool', async (req, res)=>{
+	res.render('kool');
+});
+
+app.get('/regvisit', (req,res)=>{
 	res.render('regvisit');
 	});
 	
-app.post('/regivisit', async (req,res)=>{
+app.get('/lastvisit', async(req, res)=>{
+	const data = await visits.visits();
+	res.render('lastvisit', { splitVisit: data.split(",") });
+});
+	
+app.post('/regvisit', async (req,res)=>{
 	try {
-		await fs.open(regtextRef, 'a');
-		await fs.appendFile(regtextRef, req.body.inputName + ';');
+		const visits = await fs.open(regtextRef, 'a');
+		const timeNow = dateTimeET.time();
+		const dateNow = dateTimeET.date(1);
+		await visits.appendFile(dateNow + ',');
+		await visits.appendFile(timeNow + ',');
+		await visits.appendFile(req.body.inputName + ',');
+		await visits.appendFile(req.body.inputDate + ',');
+		await visits.appendFile(req.body.inputTime + ';\n');
+		await visits.close();
 		res.render('regvisit');
 	}
 	catch (err) {
@@ -56,5 +75,7 @@ app.post('/regivisit', async (req,res)=>{
 	}
 
 	});
+	
+
 
 app.listen(5213);
