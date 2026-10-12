@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+	<meta charset="utf-8">
+	<title>Silvia Kukk, veebiprogrammeerimine</title>
+</head>
+<body>
+<img src="../pic/veebiprogrammeerimine_2026_ID.png" alt="Banner">
+	<h1> Siin lehel on näha filmimaailmaga seotud ameteid. </h1>
+	<ul>
+		<li><a href="/">Tagasi avalehele</a></li>
+		<li><a href="/eestifilm">Tagasi Eesti filmi avalehele</a></li>
+	</ul>
+	<hr>
+	<ol>
+		<% professionList.forEach (function(profession){%>
+        <li>Amet: <%=profession.title%> <br> description: <%=profession.description %>,<br>
+		</li>
+         <% }); %>
+	</ol>
+</body>
+</html>
