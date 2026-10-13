@@ -80,12 +80,16 @@ app.post('/regvisit', async (req,res)=>{
 
 	
 });
+
+//Eesti filmi marsuudid
+const eestiFilmRouter = require('./routes/eestifilmRoutes');
+app.use('/eestifilm', eestiFilmRouter);
 	
-app.get('/eestifilm', (req,res)=>{
+/* app.get('/eestifilm', (req,res)=>{
 	res.render('eestifilm');
-});
+}); */
 	
-app.get('/eestifilm/inimesed', async(req,res)=>{
+/* app.get('/eestifilm/inimesed', async(req,res)=>{
 	let conn;
 	try {
 		conn = await mysql.createConnection({
@@ -111,12 +115,12 @@ app.get('/eestifilm/inimesed', async(req,res)=>{
 			await conn.end();
 		}
 	}
-});
-app.get('/eestifilm/inimesed_lisa', (req,res)=>{
+}); */
+/* app.get('/eestifilm/inimesed_lisa', (req,res)=>{
 	res.render('eestifilminimesed_lisa', {notice: 'Ootan sisestust!'});
-});
+}); */
 
-app.post('/eestifilm/inimesed_lisa', async(req,res)=>{
+/* app.post('/eestifilm/inimesed_lisa', async(req,res)=>{
 	console.log(req.body);
 	//kontrollime andmeid
 	//sisestatud sünnikuupäev (tekst) teisendada kuupäevaks
@@ -164,9 +168,9 @@ app.post('/eestifilm/inimesed_lisa', async(req,res)=>{
 			await conn.end();
 		}
 	}
-});
+}); */
 
-app.get('/eestifilm/eestifilmfilmid', (req,res)=>{
+/* app.get('/eestifilm/eestifilmfilmid', (req,res)=>{
 	res.render('eestifilmfilmid');
 });
 	
@@ -332,6 +336,6 @@ app.post('/eestifilm/ametid_add', async (req, res) => {
             await conn.end();
         }
     }
-});
+}); */
 
 app.listen(5213);
