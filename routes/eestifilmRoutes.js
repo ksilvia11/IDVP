@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 //kasutatavad kontrollerid
 const {
 	eestifilm,
@@ -12,7 +13,10 @@ const {
 	filmAddPost,
 	ametid,
 	ametidAdd,
-	ametidAddPost
+	ametidAddPost,
+	seosedAdd,
+	seosedAddPost,
+	seosteInfo
 	} = require('../controllers/eestifilmControllers');
 
 router.route('/').get(eestifilm);
@@ -34,6 +38,12 @@ router.route('/ametid').get(ametid);
 router.route('/ametid_add').get(ametidAdd);
 
 router.route('/ametid_add').post(ametidAddPost);
+//seosed
+router.route('/seosed').get(seosedAdd);
+
+router.route('/seosed').post(seosedAddPost);
+
+router.route('/seosteInfo').get(seosteInfo);
 
 //moodul
 module.exports = router;

@@ -50,8 +50,11 @@ app.get('/vanasona', async (req,res)=>{
 app.get('/kool', async (req, res)=>{
 	res.render('kool');
 });
+//Registreerimis marsuut
+const regvisitRouter = require('./routes/regvisitRoutes');
+app.use('/', regvisitRouter);
 
-app.get('/regvisit', (req,res)=>{
+/* app.get('/regvisit', (req,res)=>{
 	res.render('regvisit');
 	});
 	
@@ -79,7 +82,7 @@ app.post('/regvisit', async (req,res)=>{
 	}
 
 	
-});
+}); */
 
 //Eesti filmi marsuudid
 const eestiFilmRouter = require('./routes/eestifilmRoutes');

@@ -306,6 +306,135 @@ const ametidAddPost = async(req,res)=>{
     }
 }; 
 
+//@desc home page for adding connections
+//@route GET /eestifilm/seosed
+//@access public
+
+const seosedAdd = async(req, res) => {
+	let conn;
+	try {
+		conn = await mysql.createConnection({
+			host: process.env.DB_HOST, 
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME
+		});
+		//defineerime SQL päringu
+		let sqlReqPerson = 'SELECT * FROM person';
+		let sqlReqMovie = 'SELECT * FROM movie';
+		let sqlReqProfession = 'SELECT * FROM profession';
+
+		const [sqlResPerson] = await conn.execute(sqlReqPerson);
+		const [sqlResMovie] = await conn.execute(sqlReqMovie);
+		const [sqlResProfession] = await conn.execute(sqlReqProfession);
+		
+		res.render('seosed', {
+			personList: sqlResPerson,
+			movieList: sqlResMovie,
+			professionList: sqlResProfession,
+			notice: ""
+		});
+	}
+	catch (err) {
+		console.log('Andmebaasiga suhtlemise viga: ' + err);
+		res.render('eestifilminimesed', {personlist: []});
+	}
+	finally {
+		if(conn){}
+		await conn.end();
+	}
+};
+
+const seosedAddPost = async(req, res) => {
+	let conn;
+	try {
+		console.log(req.body)
+
+		const inimesedID = parseInt(req.body.inimesed);
+		const movieID = parseInt(req.body.movie);
+		const professionID = parseInt(req.body.profession);
+		const characterName = req.body.characterName;
+
+		conn = await mysql.createConnection({
+			host: process.env.DB_HOST, 
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME
+		});
+		let sqlReqPersonInMovie = 'INSERT INTO person_in_movie (character_name, person_id, movie_id, profession_id) VALUES (?,?,?,?)';
+
+		await conn.execute(sqlReqPersonInMovie, [
+			characterName,
+			inimesedID,
+			movieID,
+			professionID
+		]);
+
+		//defineerime SQL päringu
+		let sqlReqPerson = 'SELECT * FROM person';
+		let sqlReqMovie = 'SELECT * FROM movie';
+		let sqlReqProfession = 'SELECT * FROM profession';
+
+		const [sqlResPerson] = await conn.execute(sqlReqPerson);
+		const [sqlResMovie] = await conn.execute(sqlReqMovie);
+		const [sqlResProfession] = await conn.execute(sqlReqProfession);
+
+		res.render('seosed', {personList: sqlResPerson, movieList: sqlResMovie, professionList: sqlResProfession, notice: "Seos loodud!"});
+	}
+	catch (err) {
+		console.log('Andmebaasiga suhtlemise viga: ' + err);
+		res.render('eestifilminimesed', {personlist: [], notice: "Error"});
+	}
+	finally {
+		if(conn){}
+		await conn.end();
+	}
+};
+
+//@desc home page for seeing connections related to the Estonian Film industry
+//@route GET /eestifilm/seosteinfo
+//@access public
+
+//app.get('/eestifilm/seosteinfo', async(req, res)=>{
+const seosteInfo = async(req, res) => {
+	let conn;
+	try {
+		conn = await mysql.createConnection({
+			host: process.env.DB_HOST, 
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME
+		});
+		//defineerime SQL päringu
+		let sqlReqPersonInMovie = 'SELECT * FROM person_in_movie';
+		let sqlReqMovie = 'SELECT * FROM movie';
+		let sqlReqPerson = 'SELECT * FROM person';
+		let sqlReqProfession = 'SELECT * FROM profession';
+		const [ sqlResPersonInMovie ] = await conn.execute(sqlReqPersonInMovie);
+		const [ sqlResMovie ] = await conn.execute(sqlReqMovie);
+		const [ sqlResPerson ] = await conn.execute(sqlReqPerson);
+		const [ sqlResProfession ] = await conn.execute(sqlReqProfession);
+	
+		res.render('seostefail', {
+			personInMovieList: sqlResPersonInMovie,
+			movie: sqlResMovie,
+			person: sqlResPerson,
+			profession: sqlResProfession
+		});
+	}
+	catch (err) {
+		console.log('Andmebaasiga suhtlemise viga: ' + err);
+		res.render('seostefail', {
+			personInMovieList: []
+		});
+	}
+	finally {
+		if(conn){}
+		await conn.end();
+	}
+};
+
+
 module.exports = {
 	eestifilm,
 	inimesed,
@@ -316,5 +445,8 @@ module.exports = {
 	filmAddPost,
 	ametid,
 	ametidAdd,
-	ametidAddPost
+	ametidAddPost,
+	seosedAdd,
+	seosedAddPost,
+	seosteInfo
 }
