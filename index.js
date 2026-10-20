@@ -22,8 +22,8 @@ const app = express();
 app.set('view engine', 'ejs');
 //määrame avalikuna kasutatava kataloogi
 app.use(express.static('public'));
-//määrame vormide sisu parsimise
-app.use(bodyparser.urlencoded({extended: false}));
+//määrame vormide sisu parsimise, kui false siis ainult tekst
+app.use(bodyparser.urlencoded({extended: true}));
 
 //marsuudid
 app.get('/', (req,res)=>{
@@ -88,6 +88,8 @@ app.post('/regvisit', async (req,res)=>{
 const eestiFilmRouter = require('./routes/eestifilmRoutes');
 app.use('/eestifilm', eestiFilmRouter);
 	
+
+
 /* app.get('/eestifilm', (req,res)=>{
 	res.render('eestifilm');
 }); */
@@ -340,5 +342,10 @@ app.post('/eestifilm/ametid_add', async (req, res) => {
         }
     }
 }); */
+
+	
+//galeriipiltide üleslaadimine
+const galleryPhotoUploadRouter = require('./routes/galleryPhotoUploadRoutes');
+app.use('/galleryPhotoUpload', galleryPhotoUploadRouter);
 
 app.listen(5213);
