@@ -23,6 +23,5 @@ const galleryGet = async (req, res) => {
 };
 
 module.exports = {
-    // ... sinu teised eksportridad
     galleryGet
 };
