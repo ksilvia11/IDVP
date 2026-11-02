@@ -26,12 +26,39 @@ app.use(express.static('public'));
 app.use(bodyparser.urlencoded({extended: true}));
 
 //marsuudid
-app.get('/', (req,res)=>{
+app.get('/', async (req,res)=>{
 	const dayNow = dateTimeET.day();
 	const dateNow = dateTimeET.date(1);
 	const timeNow = dateTimeET.time();
 	//res.send('Express.js veeb läkski käima"');
-	res.render('index', {dayNow: dayNow, dateNow: dateNow, timeNow: timeNow});
+	//paneme ka siia sisse galleriipiltid
+	let conn;
+	let latestPhoto = null;
+	try {
+		conn = await mysql.createConnection({
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME
+		});
+		
+		// SQL päring uusima avaliku foto leidmiseks (privacy = 3)
+		const sql = 'SELECT filename, alttext FROM galleryphotos WHERE id = (SELECT MAX(id) FROM galleryphotos WHERE privacy = ? AND deleted IS NULL)';
+		const [rows] = await conn.execute(sql, [3]);
+		
+		if (rows.length > 0 && rows[0].filename) {
+			latestPhoto = {
+				filename: rows[0].filename,
+				alttext: rows[0].alttext || 'Uusim avalik foto'
+			};
+		}
+	} catch (err) {
+		console.log('Viga avalehe pildi laadimisel: ' + err);
+	} finally {
+		if (conn) await conn.end();
+	}
+	
+	res.render('index', {dayNow: dayNow, dateNow: dateNow, timeNow: timeNow, latestPhoto: latestPhoto});
 });
 
 
@@ -347,5 +374,11 @@ app.post('/eestifilm/ametid_add', async (req, res) => {
 //galeriipiltide üleslaadimine
 const galleryPhotoUploadRouter = require('./routes/galleryPhotoUploadRoutes');
 app.use('/galleryPhotoUpload', galleryPhotoUploadRouter);
+
+//galleriipiltide vaatamine
+const galleryPhotoRouter = require('./routes/galleryPhotoRoutes');
+app.use('/galleryPhoto', galleryPhotoRouter);
+
+
 
 app.listen(5213);

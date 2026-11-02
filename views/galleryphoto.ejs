@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+	<meta charset="utf-8">
+	<title>Silvia Kukk, veebiprogrammeerimine</title>
+</head>
+<body>
+<img src="../pic/veebiprogrammeerimine_2026_ID.png" alt="Banner">
+	<h1> Galeriipildid </h1>
+	<p> Siin lehel saad imetleda pilte </p>
+	<hr>
+	<ul>
+		<li><a href="/">Tagasi avalehele</a></li>
+	
+	</ul>
+	<hr>
+	<div class="gallery-grid">
+    <% if (photos && photos.length > 0) { %>
+        <% photos.forEach(photo => { %>
+            <div class="photo-card">
+                <img src="/gallery/thumbs/<%= photo.filename %>" alt="<%= photo.alttext || 'Galerii foto' %>">
+                <p><%= photo.alttext || 'Uusim avalik foto' %></p>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>Galeriis ei ole pilte.</p>
+    <% } %>
+</div>
+	
+</body>
+</html>

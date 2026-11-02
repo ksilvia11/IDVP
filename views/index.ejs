@@ -13,6 +13,8 @@
 	<p>Kuu: <%= dateNow %> </p>
 	<p>Kellaaeg: <%= timeNow %> </p>
 
+
+
 	<ul>
 		<li><a href="/kool">Kool</a></li>
 		<li><a href="/vanasona">Tänane vanasõna</a></li>
@@ -20,6 +22,17 @@
 		<li><a href="/lastvisit">Hiljutine külastaja</a></li>
 		<li><a href="/eestifilm">Eesti film</a></li>
 		<li><a href="/galleryPhotoUpload">Fotode üleslaadimine pildigaleriise</a></li>
+		<li><a href="/galleryPhoto">Fotode pildigalerii</a></li>
 	</ul>
+	
+<% if (latestPhoto) { %>
+    <div class="latest-photo-container">
+        <h3>Uusim avalik foto</h3>
+        <img src="/gallery/normal/<%= latestPhoto.filename %>" alt="<%= latestPhoto.alttext %>">
+    </div>
+<% } else { %>
+    <p>Avalikke fotosid hetkel ei ole.</p>
+<% } %>
+
 </body>
 </html>

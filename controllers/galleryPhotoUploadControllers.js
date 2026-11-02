@@ -14,6 +14,7 @@ const galleryPhotoUpload = (req, res) => {
 //@route GET /galleryPhotoUpload
 //@access public
 
+
 const galleryPhotoUploadPost = async (req, res) => {
 	//console.log(req.file);
 	//console.log(req.body);
@@ -21,11 +22,20 @@ const galleryPhotoUploadPost = async (req, res) => {
 	try {
 		//genereerime oma failinime
 		const fileName = 'vp_' + Date.now() + '.jpg';
-		await fs.rename(req.file.path, req.file.destination + fileName);
+		
+		const origPath = process.env.UPLOAD_ORIGINAL_PATH || './public/gallery/orig/';
+		const normalPath = process.env.UPLOAD_RESIZED_PATH || './public/gallery/normal/';
+		const thumbPath = process.env.UPLOAD_THUMBNAIL_PATH || './public/gallery/thumbs/';
+		
+		await fs.rename(req.file.path, origPath + fileName);
+		//await fs.rename(req.file.path, req.file.destination + fileName);
 		//pildi väiksemaks muutmine
-		await sharp(req.file.destination + fileName).resize(800, 600).jpeg({quality:90}).toFile('./public/gallery/normal/' + fileName);
+		await sharp(origPath + fileName).resize(800, 600).composite([{ input: './public/gallery/vp_logo_small.png', gravity: 'southeast' }]).jpeg({quality: 90})
+			.toFile(normalPath + fileName);
+		//await sharp(req.file.destination + fileName).resize(800, 600).jpeg({quality:90}).toFile('./public/gallery/normal/' + fileName);
 		//teeme ka pisipildi
-		await sharp(req.file.destination + fileName).resize(100, 100).jpeg({quality:90}).toFile('./public/gallery/thumbs/' + fileName);
+		await sharp(origPath + fileName).resize(100, 100).jpeg({quality: 90}).toFile('./public/gallery/thumbs/' + fileName);
+		//await sharp(req.file.destination + fileName).resize(100, 100).jpeg({quality: 90}).toFile('./public/gallery/thumbs/' + fileName);
 		let sqlReq = 'INSERT INTO galleryphotos (filename, origname, alttext, privacy, userid) VALUES (?,?,?,?,?)';
 		const userId = 1; //see on ajutine, kuni teeme kasutajakontod ja sisselogimise
 		conn = await mysql.createConnection({
