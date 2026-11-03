@@ -1,4 +1,9 @@
 const mysql = require('mysql2/promise');
+
+//@description home page for viewing photos
+//@route GET /galleryPhoto
+//@access public
+
 const galleryGet = async (req, res) => {
 	let conn;
 	try {
